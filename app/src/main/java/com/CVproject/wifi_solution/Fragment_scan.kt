@@ -105,8 +105,14 @@ class Fragment_scan : Fragment(){
         FirebaseVision.getInstance().onDeviceTextRecognizer.processImage(FirebaseVisionImage.fromBitmap(bitmap))
             .addOnSuccessListener {firebaseVisionText ->
                 for(block in firebaseVisionText.textBlocks){
-
                     lineText = block.text
+                    // 정규 표현식을 이용한 재처리
+                    val refinedText = lineText
+                    .replace(Regex("\\s+"), "")    // 공백 제거
+                    .replace(Regex("[!|lI]"), "1") // 1로 변환
+                    .replace(Regex("[oO]"), "0")   // o/O를 0으로 변환
+                
+                    lineText = refinedText
                     view?.textView?.setText(lineText)
                     showPasswordPopup()
                     break
